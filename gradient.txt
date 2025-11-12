@@ -1,0 +1,622 @@
+🟩 Q1. What is the problem statement?
+
+A:
+To implement the Gradient Descent Algorithm and find the local minima of the function
+
+𝑦
+=
+(
+𝑥
++
+3
+)
+2
+y=(x+3)
+2
+
+starting from the point x = 2.
+
+🟩 Q2. What is Gradient Descent?
+
+A:
+Gradient Descent is an optimization algorithm used to find the minimum value of a function by iteratively updating parameters in the direction of the negative gradient.
+It is commonly used in machine learning to minimize the cost function and improve model accuracy.
+
+🟩 Q3. What is the goal of Gradient Descent?
+
+A:
+The goal is to reach the lowest point (minimum) of a function, where the slope or gradient becomes zero.
+This is where the function’s value is smallest — also called the local or global minima.
+
+🟩 Q4. What is the formula for Gradient Descent?
+𝑥
+𝑛
+𝑒
+𝑤
+=
+𝑥
+𝑜
+𝑙
+𝑑
+−
+𝛼
+⋅
+𝑓
+′
+(
+𝑥
+𝑜
+𝑙
+𝑑
+)
+x
+new
+	​
+
+=x
+old
+	​
+
+−α⋅f
+′
+(x
+old
+	​
+
+)
+
+where:
+
+𝛼
+α → Learning rate
+
+𝑓
+′
+(
+𝑥
+)
+f
+′
+(x) → Derivative (gradient) of the function
+
+𝑥
+𝑜
+𝑙
+𝑑
+x
+old
+	​
+
+ → Current position
+
+𝑥
+𝑛
+𝑒
+𝑤
+x
+new
+	​
+
+ → Updated position
+
+🟩 Q5. What does the learning rate (α) control?
+
+A:
+The learning rate controls the step size — how far we move in each iteration toward the minimum.
+
+Learning Rate	Effect
+Too Small	Converges slowly
+Too Large	May overshoot the minimum or diverge
+
+Example used: α = 0.01
+
+🟩 Q6. What is the derivative of y = (x + 3)² ?
+
+A:
+
+𝑑
+𝑦
+𝑑
+𝑥
+=
+2
+(
+𝑥
++
+3
+)
+dx
+dy
+	​
+
+=2(x+3)
+🟩 Q7. What are the first two iterations of Gradient Descent?
+Iteration 1
+𝑥
+1
+=
+𝑥
+0
+−
+0.01
+×
+2
+(
+𝑥
+0
++
+3
+)
+x
+1
+	​
+
+=x
+0
+	​
+
+−0.01×2(x
+0
+	​
+
++3)
+𝑥
+1
+=
+2
+−
+0.01
+×
+2
+(
+2
++
+3
+)
+=
+2
+−
+0.1
+=
+1.9
+x
+1
+	​
+
+=2−0.01×2(2+3)=2−0.1=1.9
+Iteration 2
+𝑥
+2
+=
+1.9
+−
+0.01
+×
+2
+(
+1.9
++
+3
+)
+=
+1.9
+−
+0.098
+=
+1.802
+x
+2
+	​
+
+=1.9−0.01×2(1.9+3)=1.9−0.098=1.802
+
+✅ Each step moves closer to x = -3, which is the local minimum.
+
+🟩 Q8. What happens after many iterations?
+
+A:
+The value of x keeps decreasing and gradually converges to -3, where the gradient becomes zero and the function reaches its minimum.
+
+🟩 Q9. What are stopping conditions in Gradient Descent?
+
+The algorithm stops when either of the following occurs:
+
+The difference between consecutive x values is less than a small value (precision).
+Example: abs(x_new - x_old) < 0.0001
+
+The maximum number of iterations is reached.
+
+🟩 Q10. What is the pseudo-code for Gradient Descent?
+while previous_step_size > precision and iters < max_iters:
+    prev_x = cur_x
+    cur_x = cur_x - rate * df(prev_x)
+    previous_step_size = abs(cur_x - prev_x)
+    iters = iters + 1
+
+🟩 Q11. What is the output of the algorithm?
+
+The value of x converges to -3.
+
+The corresponding minimum value of y is:
+
+𝑦
+=
+(
+𝑥
++
+3
+)
+2
+=
+0
+y=(x+3)
+2
+=0
+🟩 Q12. What are key terms in Gradient Descent?
+Term	Meaning
+Gradient (Derivative)	The slope or rate of change of the function
+Learning Rate (α)	Controls how much to adjust x in each step
+Local Minima	The nearest valley (minimum point)
+Global Minima	The lowest point across the entire function
+Iteration	One update step of the algorithm
+🟩 Q13. What is the use of Gradient Descent in Machine Learning?
+
+A:
+Gradient Descent is used to minimize the cost function in algorithms like:
+
+Linear Regression
+
+Logistic Regression
+
+Neural Networks
+
+Deep Learning
+
+It helps models learn the optimal weights that minimize prediction error.
+
+🟩 Q14. What are different types of Gradient Descent?
+Type	Description
+Batch Gradient Descent	Uses all training data for each update.
+Stochastic Gradient Descent (SGD)	Uses one sample at a time (faster, noisier).
+Mini-Batch Gradient Descent	Uses small batches — balances speed and accuracy.
+🟩 Q15. What metrics are used for performance measurement?
+
+A:
+
+Number of iterations until convergence
+
+Final x and y values
+
+Convergence speed (based on learning rate)
+
+Precision difference between iterations
+
+🟩 Q16. What is the importance of precision in this algorithm?
+
+A:
+Precision defines how close to the true minimum we want to get.
+Smaller precision means more accurate result but slower convergence.
+
+🟩 Q17. How is Gradient Descent related to Neural Networks?
+
+A:
+In Neural Networks, Gradient Descent updates the weights of the model to minimize loss (error) between predicted and actual outputs.
+This process is called backpropagation.
+
+🟩 Q18. What are advantages of Gradient Descent?
+
+✅ Simple and effective for optimization
+✅ Works with non-linear and complex functions
+✅ Essential in deep learning and ML training
+
+🟩 Q19. What are limitations of Gradient Descent?
+
+❌ Sensitive to learning rate
+❌ Can get stuck in local minima
+❌ Slow convergence for complex cost surfaces
+
+🟩 Q20. What is the conclusion?
+
+A:
+Gradient Descent successfully finds the local minimum of 
+𝑦
+=
+(
+𝑥
++
+3
+)
+2
+y=(x+3)
+2
+ near x = -3.
+It is a powerful optimization algorithm used across many machine learning models to minimize error functions and achieve better accuracy.
+Its performance depends on the learning rate and precision parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+⚙️ How to Explain in Viva
+
+This graph represents the function 
+𝑦
+=
+(
+𝑥
++
+3
+)
+2
+y=(x+3)
+2
+.
+I used Gradient Descent starting from 
+𝑥
+=
+2
+x=2 with a learning rate of 0.01.
+Each blue dot shows the updated x-value in every iteration.
+The curve demonstrates how Gradient Descent moves down the slope of the parabola, gradually approaching the minimum point at 
+𝑥
+=
+−
+3
+x=−3, where 
+𝑦
+=
+0
+y=0.
+The algorithm stops when the change in x becomes very small, meaning convergence is achieved.
+
+
+
+1) Purpose (one-liner)
+
+“We are using gradient descent to find the minimum of the function 
+𝑦
+=
+(
+𝑥
++
+3
+)
+2
+y=(x+3)
+2
+ starting from 
+𝑥
+=
+2
+x=2. The algorithm updates x iteratively by moving opposite the derivative until convergence.”
+
+2) Important variables (what they are & why)
+
+current_x = 2
+Starting point for descent (initial guess).
+
+rate = 0.01
+Learning rate (α) — step size for each update. Controls speed and stability.
+
+precision = 0.000001
+Stopping tolerance — when change in x is smaller than this, we assume convergence.
+
+delta_x = 1
+Initial difference between steps so the loop starts. Will be updated inside the loop.
+
+max_iterations = 10000
+Safety cap to prevent infinite loops if convergence doesn’t occur.
+
+iteration_counter = 0
+Counts how many updates have been made.
+
+3) The function helpers (what they return)
+def slope(x):
+    return 2*(x+3)
+
+
+slope(x) returns derivative 
+𝑓
+′
+(
+𝑥
+)
+=
+2
+(
+𝑥
++
+3
+)
+f
+′
+(x)=2(x+3).
+
+Gradient descent needs this to know the direction of steepest increase.
+
+def value_y(x):
+    return (x+3)**2
+
+
+value_y(x) returns the function value 
+𝑦
+=
+(
+𝑥
++
+3
+)
+2
+y=(x+3)
+2
+ at x so we can track progress.
+
+4) Data storage for plotting
+y = []
+x = []
+y.append(value_y(current_x))
+x.append(current_x)
+
+
+We store each x and its y to later plot the path the algorithm took on the parabola.
+
+5) The gradient-descent loop (core logic)
+while delta_x > precision and iteration_counter < max_iterations:
+    previous_x = current_x
+    current_x = previous_x - rate * slope(previous_x)
+    y.append(value_y(current_x))
+    x.append(current_x)
+    delta_x = abs(previous_x - current_x)
+    print(f"Iteration {iteration_counter+1}")
+    iteration_counter += 1
+    print(f"X = {current_x}")
+
+
+Explain step-by-step:
+
+previous_x = current_x — save current value before update.
+
+current_x = previous_x - rate * slope(previous_x)
+
+Update rule: 
+𝑥
+new
+=
+𝑥
+old
+−
+𝛼
+⋅
+𝑓
+′
+(
+𝑥
+old
+)
+x
+new
+	​
+
+=x
+old
+	​
+
+−α⋅f
+′
+(x
+old
+	​
+
+).
+
+We move opposite the gradient to reduce the function value.
+
+Save the new y and x for plotting.
+
+delta_x = abs(previous_x - current_x) — compute how big the last step was.
+
+Print iteration number and current x (for progress / debugging).
+
+iteration_counter += 1 increments the counter.
+
+Loop condition: stops when delta_x <= precision (converged) or iteration_counter reaches max_iterations.
+
+6) After loop — final result
+print(f"Local Minima occurs at: {current_x}")
+
+
+Prints final x value where the algorithm stopped (should be very close to -3 for this function).
+
+7) Plotting the path
+import matplotlib.pyplot as plt
+plt.scatter(x,y)
+plt.xlabel('x-values')
+plt.ylabel('y-values')
+plt.title('y=(x+3)^2')
+plt.show()
+
+
+Scatter plot of the stored (x,y) points shows the points visited by gradient descent on the parabola.
+
+Visually you can see the steps moving from the start (x=2) down to the minimum at x = −3.
+
+8) Mathematical intuition (why it converges here)
+
+For 
+𝑦
+=
+(
+𝑥
++
+3
+)
+2
+y=(x+3)
+2
+ the derivative is linear 
+2
+(
+𝑥
++
+3
+)
+2(x+3). The function is convex, so gradient descent with a small enough learning rate will converge to the global minimum at 
+𝑥
+=
+−
+3
+x=−3.
+
+As you get closer to -3 the slope magnitude decreases → update steps get smaller → algorithm naturally slows down and converges.
+
+9) What to mention about hyperparameters in viva
+
+Learning rate (rate)
+
+Too large → overshoot or diverge.
+
+Too small → very slow convergence.
+
+Precision
+
+Smaller precision → more accurate but more iterations.
+
+Max iterations
+
+Safety to prevent infinite loops.
+
+10) Common pitfalls / improvements to note
+
+delta_x is computed after update — correct here.
+
+You might want to also print final y (function value) and number of iterations for reporting:
+
+print(current_x, value_y(current_x), iteration_counter)
+
+
+Try different rate values to demonstrate under/over-shoot (good viva demo).
+
+For multidimensional problems, update uses gradient vector and same stopping logic applies.
+
+11) Complexity & behaviour (short)
+
+Time complexity: O(iterations) (each iteration does O(1) work for this 1-D case).
+
+Convergence: For convex quadratic functions convergence is guaranteed with an appropriate learning rate.

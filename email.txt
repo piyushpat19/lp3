@@ -1,0 +1,181 @@
+Cell 2
+df = pd.read_csv('emails.csv')
+df.head()
+
+
+Loads the dataset from emails.csv into a DataFrame df.
+
+df.head() shows first 5 rows so you can verify columns (usually text and label columns like text and spam).
+
+Cell 3
+df.isnull().sum()
+
+
+Counts missing values per column.
+
+Purpose: detect nulls that must be handled before training.
+
+Cell 4
+df.dropna(how='any', inplace=True)
+
+
+Removes any row that has a missing value (how='any').
+
+Ensures there are no NaNs which would break training or vectorization later.
+
+Cell 5
+x = df.iloc[:,1:-1].values
+y = df.iloc[:,-1].values
+
+
+Selects features and labels:
+
+x = all columns except first and last (feature columns; in many email datasets these would be precomputed numeric features or vectorized text columns).
+
+y = last column = target labels (spam/ham).
+
+.values converts them into NumPy arrays required by scikit-learn.
+
+Viva tip: explain what the columns actually are in your emails.csv (e.g., token counts, TF-IDF values, or engineered features). If the file stores raw text, there must have been preprocessing before this cell (tokenization/vectorization) — mention that.
+
+Cell 6
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.25,random_state=10)
+
+
+Splits data into training (75%) and testing (25%).
+
+random_state=10 makes the split reproducible.
+
+Purpose: train on x_train,y_train and evaluate generalization on unseen x_test,y_test.
+
+Cell 7 — Evaluation helper function
+from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix, accuracy_score, precision_score, recall_score, PrecisionRecallDisplay, RocCurveDisplay
+
+def report(classifier):
+    y_pred = classifier.predict(x_test)
+    cm = confusion_matrix(y_test,y_pred)
+    display = ConfusionMatrixDisplay(cm,display_labels=classifier.classes_)
+    display.plot()
+    print(f"Accuracy:  {accuracy_score(y_test,y_pred)}")
+    print(f"Precision Score:  {precision_score(y_test,y_pred)}")
+    print(f"Recall Score:  {recall_score(y_test,y_pred)}")
+    PrecisionRecallDisplay.from_estimator(classifier,x_test,y_test).plot()
+    RocCurveDisplay.from_estimator(classifier,x_test,y_test).plot()
+
+
+Explain line-by-line:
+
+Imports metrics and plotting helpers.
+
+report(classifier):
+
+Calls classifier.predict(x_test) to get predictions y_pred.
+
+Builds confusion matrix cm = confusion_matrix(y_test, y_pred).
+
+ConfusionMatrixDisplay plots the matrix (shows TP, TN, FP, FN).
+
+Prints:
+
+Accuracy = (TP + TN) / total
+
+Precision = TP / (TP + FP) — of predicted spam, how many were actually spam
+
+Recall = TP / (TP + FN) — of actual spam, how many were detected
+
+Plots Precision–Recall curve and ROC curve (AUC). These graphs show tradeoffs and classifier discrimination power.
+
+Viva tip: be ready to explain confusion matrix entries and when to prefer precision vs recall (spam detection often needs high recall to catch spam, but precision matters to avoid false positives).
+
+Cell 8
+from sklearn.neighbors import KNeighborsClassifier
+...
+
+
+Imports KNN. (The notebook likely shows imports and possibly some preprocessing omitted in preview.)
+
+KNN is a distance-based classifier; it labels a sample by majority vote of its nearest k neighbors.
+
+Cell 9
+kNN = KNeighborsClassifier(n_neighbors=10)
+kNN.fit(x_train,y_train)
+
+
+Instantiates KNN with k=10.
+
+Trains KNN (KNN is a lazy learner but .fit() stores the training set).
+
+n_neighbors=10 means predictions use the 10 nearest training samples.
+
+Cell 10
+report(kNN)
+
+
+Runs the report() function for the KNN model:
+
+Shows confusion matrix, prints accuracy/precision/recall, and draws PR & ROC curves for KNN.
+
+How to present result: quote numbers from your output (accuracy, precision, recall, AUC) and interpret them: e.g., “KNN achieved X% accuracy, precision Y, recall Z; ROC AUC = W — meaning...”
+
+Cell 11
+from sklearn.svm import SVC
+svm = SVC(gamma='auto',random_state=10)
+svm.fit(x_train,y_train)
+
+
+Imports SVM classifier (SVC).
+
+gamma='auto' uses 1/n_features as gamma (controls influence of single training sample in RBF kernel; if kernel is default 'rbf'). If kernel='linear', gamma not used.
+
+Fits SVM on training data.
+
+Viva tip: explain SVM briefly — finds optimal separating hyperplane; works well in high-dim spaces like text (TF-IDF).
+
+Cell 12
+report(svm)
+
+
+Evaluates SVM with the same report() function — shows confusion matrix and metrics for the SVM model.
+
+Compare SVM vs KNN results: which is better in accuracy, recall, AUC? Explain differences (SVM often gives better separation on sparse high-dim data).
+
+Important concepts to mention in viva (concise)
+
+Train/Test split: why we use it (to evaluate generalization).
+
+Confusion matrix: TP, TN, FP, FN and their meaning for spam detection.
+
+Precision vs Recall:
+
+Precision: how many predicted spam are real spam (avoid false positives).
+
+Recall: how many real spam were caught (avoid false negatives).
+
+ROC & AUC:
+
+ROC: TPR vs FPR across thresholds.
+
+AUC near 1 means excellent classifier ability to distinguish classes.
+
+Precision–Recall curve: better for imbalanced datasets (emphasize performance on positive class).
+
+KNN: lazy learner, distance metric, importance of feature scaling.
+
+SVM: margin maximization, kernels; good for high-dim text data.
+
+Preprocessing: if text was present originally, mention TF-IDF or CountVectorizer step must have been applied before training (if not shown, state that features must be numeric).
+
+Short viva-ready answers you can memorize
+
+Q: What does report() do?
+A: Predicts on x_test, plots confusion matrix, prints accuracy/precision/recall, and plots Precision–Recall and ROC curves.
+
+Q: Why use PR curve in spam detection?
+A: PR curve focuses on positive-class performance; useful when dataset is imbalanced and catching spam (positive class) is important.
+
+Q: Why scale features for KNN?
+A: KNN uses distances; unscaled features with large ranges would dominate distance computation, so standardization is needed.
+
+Q: Which model is better for text classification, KNN or SVM?
+A: SVM usually performs better on high-dimensional sparse text features (TF-IDF). KNN is simpler but slower at prediction.

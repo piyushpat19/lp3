@@ -1,0 +1,74 @@
+Q1. What is Huffman Encoding?
+
+Answer:
+Huffman Encoding is a lossless data compression algorithm that assigns variable-length binary codes to input characters, based on their frequencies of occurrence.
+
+The character with higher frequency is assigned a shorter code, and
+
+The character with lower frequency is assigned a longer code.
+
+This ensures that the total number of bits used to represent the data is minimized.
+
+It is based on the Greedy Algorithm approach and uses a binary tree called the Huffman Tree to determine the codes.
+
+Example:
+If characters occur with frequencies:
+A=5, B=9, C=12, D=13, E=16, F=45
+Then F gets the shortest code, and A gets the longest code.
+
+Q2. How many bits may be required for encoding the message ‘mississippi’?
+
+Answer:
+Let’s calculate based on character frequency:
+
+Character	Frequency	Code (Example)	Bits Used
+m	1	1100	4
+i	4	00	8
+s	4	01	8
+p	2	10	4
+
+Total bits required = 4 + 8 + 8 + 4 = 24 bits
+
+Without encoding, assuming 8 bits per character × 11 characters = 88 bits.
+So, Huffman Encoding reduces the message size from 88 bits to 24 bits — a significant compression.
+
+Q3. Which tree is used in Huffman Encoding? Give one example.
+
+Answer:
+The Huffman Tree (Binary Tree) is used in Huffman Encoding.
+
+Each leaf node represents a character and its frequency.
+
+The internal nodes represent the sum of frequencies of their child nodes.
+
+The left edge is assigned ‘0’ and the right edge is assigned ‘1’.
+
+Example:
+For characters A(5), B(9), C(12), D(13), E(16), F(45),
+the tree is built by combining the two smallest frequencies repeatedly until one root remains.
+
+The resulting Huffman codes might be:
+F = 0, C = 100, D = 101, A = 1100, B = 1101, E = 111
+
+Q4. Why is Huffman Coding called Lossless Compression?
+
+Answer:
+Huffman Coding is called lossless compression because no information is lost during the encoding and decoding process.
+
+Each character has a unique binary code.
+
+The prefix rule ensures that no code is a prefix of another, which makes decoding unambiguous.
+
+The original data can be reconstructed exactly from the compressed data.
+
+Therefore, Huffman coding reduces size but preserves 100% of the original information.
+
+📊 Time Complexity of Huffman Encoding
+
+Building the Huffman Tree: O(n log n)
+(because each extractMin() operation takes O(log n) using a priority queue)
+
+Generating Codes: O(n)
+
+Overall Time Complexity: O(n log n)
+Space Complexity: O(n) (for storing tree nodes and codes)

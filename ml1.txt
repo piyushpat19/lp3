@@ -1,0 +1,237 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import datetime as dt
+Explanation:
+
+pandas → data loading and manipulation
+
+matplotlib.pyplot, seaborn → visualization (boxplots, scatterplots, etc.)
+
+datetime → to extract hour, day, month from datetime fields
+
+💬 Viva Tip:
+
+These libraries handle dataset cleaning, visualization, and time/date extraction.
+
+🟩 Cell 2 — Load Dataset
+python
+Copy code
+df = pd.read_csv("uber.csv")
+df.head()
+Explanation:
+Loads the Uber trip dataset and displays the first few rows.
+Common columns include:
+
+pickup_datetime
+
+pickup_longitude, pickup_latitude
+
+dropoff_longitude, dropoff_latitude
+
+passenger_count
+
+fare_amount (target column)
+
+🟩 Cell 3 — Remove Irrelevant Columns
+python
+Copy code
+df.drop(columns=['Unnamed: 0', 'key'], inplace=True)
+Explanation:
+Removes unnecessary columns that don’t affect prediction.
+✅ Keeps only useful features for modeling.
+
+🟩 Cell 4 — Check Data Info
+python
+Copy code
+df.info()
+Shows data types, non-null counts, and memory usage. Helps identify missing values and categorical columns.
+
+🟩 Cell 5 — Remove Missing Values
+python
+Copy code
+df.dropna(how='any', inplace=True)
+Explanation:
+Deletes any rows with missing data (e.g., missing fare, coordinates, or passenger count).
+
+🟩 Cell 6 — Feature Engineering (Distance)
+python
+Copy code
+import numpy as np
+def distance(lat1, lon1, lat2, lon2):
+    return np.sqrt((lat2-lat1)**2 + (lon2-lon1)**2)
+
+df['Distance'] = distance(df['pickup_latitude'], df['pickup_longitude'],
+                          df['dropoff_latitude'], df['dropoff_longitude'])
+Explanation:
+
+Calculates approximate distance between pickup and dropoff points.
+
+Adds a new column Distance in kilometers.
+(Alternatively, Haversine formula can be used for more accuracy.)
+
+🟩 Cell 7 — Filter Invalid Rows
+python
+Copy code
+df = df[(df['fare_amount'] > 0) & (df['Distance'] > 0)]
+df = df[df['passenger_count'] <= 6]
+Explanation:
+
+Removes negative or zero fares/distances (invalid rides).
+
+Removes rides with unrealistic passenger counts (>6).
+
+🟩 Cell 8 — Boxplots for Outliers
+python
+Copy code
+for col in df.select_dtypes(exclude=['object']):
+    plt.figure()
+    sns.boxplot(data=df, x=col)
+Explanation:
+Draws boxplots for all numeric columns to visualize outliers.
+Each box shows median, quartiles, and extreme values.
+
+💬 Viva Tip:
+
+Boxplots help find and remove extreme values that might distort regression.
+
+🟩 Cell 9 — Scatter Plot (Distance vs Fare)
+python
+Copy code
+sns.scatterplot(x=df['Distance'], y=df['fare_amount'])
+Explanation:
+Plots relationship between trip Distance (x-axis) and Fare (y-axis).
+Shows a clear upward trend → greater distance → higher fare.
+
+✅ Confirms that Linear Regression is appropriate.
+
+🟩 Cell 10 — Correlation Matrix
+python
+Copy code
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+Explanation:
+Computes pairwise correlation among numeric columns.
+Checks how strongly fare_amount is correlated with Distance.
+Usually fare_amount and Distance show high positive correlation.
+
+🟩 Cell 11 — Prepare Data for Model
+python
+Copy code
+X = df[['Distance']]
+y = df[['fare_amount']]
+Explanation:
+Selects:
+
+X → independent variable (Distance)
+
+y → dependent variable (Fare)
+
+🟩 Cell 12 — Train/Test Split
+python
+Copy code
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+Explanation:
+Splits dataset into:
+
+80% training data
+
+20% testing data
+
+random_state=42 ensures same split every time.
+
+🟩 Cell 13 — Linear Regression Model
+python
+Copy code
+from sklearn.linear_model import LinearRegression
+model = LinearRegression()
+model.fit(x_train, y_train)
+Explanation:
+
+Creates a Linear Regression model.
+
+Fits a straight-line relationship:
+
+𝑓
+𝑎
+𝑟
+𝑒
+=
+𝑚
+×
+𝑑
+𝑖
+𝑠
+𝑡
+𝑎
+𝑛
+𝑐
+𝑒
++
+𝑐
+fare=m×distance+c
+The model learns m (slope) and c (intercept).
+
+🟩 Cell 14 — Model Prediction
+python
+Copy code
+y_pred = model.predict(x_test)
+Explanation:
+Uses trained model to predict fare for unseen test data (based on distance).
+
+🟩 Cell 15 — Model Evaluation
+python
+Copy code
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+r2 = r2_score(y_test, y_pred)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+mae = mean_absolute_error(y_test, y_pred)
+
+print("R²:", r2)
+print("RMSE:", rmse)
+print("MAE:", mae)
+Explanation:
+Evaluates accuracy of predictions using:
+
+Metric	Meaning
+R²	How much of fare variation is explained by distance (e.g. 0.60 → 60%)
+RMSE	Average error in fare (lower = better)
+MAE	Mean absolute difference between predicted and actual fare
+
+🟩 Cell 16 — Predict Fare for Custom Distance
+python
+Copy code
+distance = 10
+predicted_fare = model.predict([[distance]])
+print(f"Predicted fare for {distance} km is ${predicted_fare[0][0]:.2f}")
+Explanation:
+Gives user-defined prediction.
+If distance = 10 km → model estimates fare ≈ $27 (example).
+
+🟩 Cell 17 — Visualization of Regression Line
+python
+Copy code
+plt.scatter(x_test, y_test, color='blue')
+plt.plot(x_test, y_pred, color='red')
+plt.xlabel('Distance (km)')
+plt.ylabel('Fare Amount ($)')
+plt.title('Actual vs Predicted Fares')
+plt.show()
+Explanation:
+
+Blue dots → actual fares
+
+Red line → predicted regression line
+
+Shows how closely predictions fit actual data points.
+
+📈 Summary of Model Performance
+Metric	Description	Typical Value
+R²	0.60 → 0.70	Distance explains ~60–70% of fare variation
+RMSE	~0.6	Avg prediction error around 0.6
+MAE	~0.27	On average, predictions differ by $0.27
+
+✅ Model captures trend but can be improved with additional features (like time, location, traffic).
+
+💬
+
